@@ -7,7 +7,6 @@ import TestComponents from './components/TestComponents'
 
 function App() {
   const [selectedString, setSelectedString] = useState(null);
-  const [currentStep, setCurrentStep] = useState(1);
   const [showTestComponents, setShowTestComponents] = useState(false);
   const analysisRef = useRef(null);
 
@@ -16,7 +15,6 @@ function App() {
     setSelectedString(str);
 
     if (str) {
-      setCurrentStep(3); // Move to decode step
       // Scroll to analysis section
       setTimeout(() => {
         if (analysisRef.current) {
@@ -28,7 +26,7 @@ function App() {
 
   // Handle scan action
   const handleScan = () => {
-    setCurrentStep(2); // Move to scan step
+    // Just a placeholder for any future scan-related functionality
   };
 
   return (
@@ -73,9 +71,9 @@ function App() {
           <TestComponents />
         ) : (
           <div className="container mx-auto max-w-7xl">
-            <div className="flex flex-col lg:flex-row gap-8">
-              {/* Left side - Code Input */}
-              <div className="w-full lg:w-1/2">
+            <div className="flex flex-col gap-8">
+              {/* Code Input Section */}
+              <div className="w-full">
                 <div className="card" style={{
                   boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
                   borderWidth: "1px",
@@ -88,27 +86,27 @@ function App() {
                 </div>
               </div>
 
-              {/* Right side - Results */}
-              <div className="w-full lg:w-1/2">
-                {selectedString ? (
-                  <div ref={analysisRef} className="scroll-mt-6 card" style={{
-                    boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
-                    borderWidth: "1px",
-                    borderImage: "linear-gradient(to bottom right, hsl(var(--gradient-end)/30%), hsl(var(--gradient-start)/10%)) 1"
-                  }}>
-                    <div className="card-header border-b border-border/50">
-                      <h2 className="card-title">Analysis Results</h2>
-                      <p className="card-description">
-                        Analyzing string with entropy score of <span className="font-medium">{selectedString.entropy.toFixed(2)}</span>
-                      </p>
-                    </div>
+              {/* Results Section */}
+              {selectedString && (
+                <div ref={analysisRef} className="scroll-mt-6 card" style={{
+                  boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
+                  borderWidth: "1px",
+                  borderImage: "linear-gradient(to bottom right, hsl(var(--gradient-end)/30%), hsl(var(--gradient-start)/10%)) 1"
+                }}>
+                  <div className="card-header border-b border-border/50">
+                    <h2 className="card-title">Analysis Results</h2>
+                    <p className="card-description">
+                      Analyzing string with entropy score of <span className="font-medium">{selectedString.entropy.toFixed(2)}</span>
+                    </p>
+                  </div>
 
-                    <div className="p-6 space-y-6">
+                  <div className="p-6 space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {/* Decoder Preview */}
                       <div className="bg-muted/50 rounded-lg p-4">
                         <DecoderPreview
                           encodedString={selectedString.value}
-                          onDecoded={() => setCurrentStep(4)}
+                          onDecoded={() => {}}
                         />
                       </div>
 
@@ -120,32 +118,22 @@ function App() {
                           decodingSuccess={selectedString.analysis?.likelyEncoding !== 'unknown'}
                         />
                       </div>
+                    </div>
 
-                      <div className="flex justify-center mt-6">
-                        <button
-                          className="btn btn-outline"
-                          onClick={() => {
-                            setSelectedString(null);
-                            setCurrentStep(1);
-                          }}
-                        >
-                          ← Back to Scanner
-                        </button>
-                      </div>
+                    <div className="flex justify-center mt-6">
+                      <button
+                        className="btn btn-outline"
+                        onClick={() => {
+                          setSelectedString(null);
+                          setCurrentStep(1);
+                        }}
+                      >
+                        ← Back to Scanner
+                      </button>
                     </div>
                   </div>
-                ) : (
-                  <div className="h-full flex items-center justify-center">
-                    <div className="text-center p-8 rounded-lg bg-muted/20 border border-border/50">
-                      <div className="text-6xl mb-4 opacity-20">🔍</div>
-                      <h3 className="text-xl font-medium mb-2">No Results Yet</h3>
-                      <p className="text-muted-foreground">
-                        Paste your code in the editor on the left and click "Scan for Suspicious Strings" to analyze.
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </div>
         )}
