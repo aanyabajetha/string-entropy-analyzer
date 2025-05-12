@@ -14,10 +14,12 @@ export default function EntropyScanner({ onStringSelect, onScan, initialCode = '
   const [isScanning, setIsScanning] = useState(false);
   const [selectedStringIndex, setSelectedStringIndex] = useState(null);
   const [isExporting, setIsExporting] = useState(false);
+  const [hasScanned, setHasScanned] = useState(false);
 
   const handleScan = () => {
     setIsScanning(true);
     setSelectedStringIndex(null);
+    setHasScanned(false);
 
     // Short timeout to allow UI to update before potentially intensive operation
     setTimeout(() => {
@@ -31,6 +33,7 @@ export default function EntropyScanner({ onStringSelect, onScan, initialCode = '
         }));
 
         setDetectedStrings(resultsWithAnalysis);
+        setHasScanned(true);
 
         if (onScan) {
           onScan(resultsWithAnalysis);
@@ -166,27 +169,38 @@ export default function EntropyScanner({ onStringSelect, onScan, initialCode = '
         </div>
 
         {/* Results Section */}
-        {detectedStrings.length > 0 && (
+        {hasScanned && (
           <div className="space-y-4 mt-6">
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-medium">
-                Detected Strings ({detectedStrings.length})
+                {detectedStrings.length > 0
+                  ? `Detected Strings (${detectedStrings.length})`
+                  : 'Scan Results'}
               </h3>
 
-              <button
-                onClick={handleExport}
-                disabled={isExporting}
-                className="btn btn-sm btn-outline"
-              >
-                {isExporting ? 'Exporting...' : 'Export Results'}
-              </button>
+              {detectedStrings.length > 0 && (
+                <button
+                  onClick={handleExport}
+                  disabled={isExporting}
+                  className="btn btn-sm btn-outline"
+                >
+                  {isExporting ? 'Exporting...' : 'Export Results'}
+                </button>
+              )}
             </div>
 
             <div className="bg-muted/50 rounded-lg p-4 max-h-64 overflow-y-auto">
               {detectedStrings.length === 0 ? (
-                <p className="text-center text-muted-foreground py-4">
-                  No high-entropy strings detected
-                </p>
+                <div className="text-center py-8 text-muted-foreground">
+                  <div className="text-5xl mb-4 opacity-30">✓</div>
+                  <h4 className="text-lg font-medium mb-2">No Suspicious Strings Found</h4>
+                  <p>
+                    No high-entropy strings were detected in the provided code using the current threshold.
+                  </p>
+                  <p className="mt-2 text-sm">
+                    Try adjusting the entropy threshold or check a different code sample.
+                  </p>
+                </div>
               ) : (
                 <ul className="space-y-2">
                   {detectedStrings.map((str, index) => (
