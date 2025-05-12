@@ -4,7 +4,7 @@
  * This file contains sample code snippets with various encoded strings
  * for testing the entropy analyzer components.
  * @file
- */
+ */ // lines 44 and 65 commented out
 
 // Sample code with various encoded strings
 export const sampleCode = `
@@ -40,8 +40,9 @@ const mixedEncodingString = "SGVsbG8sIFdvcmxkIQ== and 48656c6c6f2c20576f726c6421
 // Normal text with low entropy
 const normalText = "This is just a normal string with relatively low entropy.";
 
-// API key (high entropy)
-const apiKey = "sk_test_4eC39HqLyjWDarjtT1zdp7dc";
+// API key (high entropy) - using a fake key for testing
+const apiKey = "TEST_API_KEY_XXXXXXXXXXXXX_EXAMPLE_ONLY";
+
 
 // JWT token (high entropy)
 const jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
@@ -62,7 +63,7 @@ export const testStrings = {
   encrypted: "U2FsdGVkX1/X8/Hx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx",
   mixed: "SGVsbG8sIFdvcmxkIQ== and 48656c6c6f2c20576f726c6421",
   normal: "This is just a normal string with relatively low entropy.",
-  apiKey: "sk_test_4eC39HqLyjWDarjtT1zdp7dc",
+  apiKey: "TEST_API_KEY_XXXXXXXXXXXXX_EXAMPLE_ONLY",
   jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
   malicious: "ZXZhbChhdG9iKCJhbGVydCgnWFNTIEF0dGFjaycpIikp"
 };
@@ -76,7 +77,8 @@ export const expectedDecodings = {
   asciiEscaped: "Hello, World!",
   binary: "Hello, World!",
   suspicious: "function evalString(str) { eval(str); }",
-  malicious: "eval(atob(\"alert('XSS Attack')\"))"
+  malicious: "eval(atob(\"alert('XSS Attack')\"))",
+  apiKey: "TEST_API_KEY_XXXXXXXXXXXXX_EXAMPLE_ONLY" // Not actually encoded, just for completeness
 };
 
 // Sample analysis results for testing the ThreatScoreCard
@@ -95,6 +97,15 @@ export const sampleAnalysisResults = {
     entropy: 5.8,
     decodingSuccess: true,
     threatLevel: "High"
+  },
+  apiKey: {
+    entropy: 5.5,
+    decodingSuccess: false,
+    threatLevel: "Medium",
+    threatFactors: [
+      "Resembles API key pattern",
+      "Medium-high entropy detected"
+    ]
   },
   malicious: {
     entropy: 6.2,
