@@ -16,6 +16,16 @@ export default function EntropyScanner({ onStringSelect, onScan, initialCode = '
   const [isExporting, setIsExporting] = useState(false);
   const [hasScanned, setHasScanned] = useState(false);
 
+  // Decoder method information
+  const decoderMethods = [
+    { id: 'base64', name: 'Base64', description: 'Decodes Base64-encoded strings, commonly used for binary data transmission' },
+    { id: 'hex', name: 'Hex', description: 'Converts hexadecimal strings to their ASCII or binary equivalents' },
+    { id: 'rot13', name: 'ROT13', description: 'Simple letter substitution cipher that replaces each letter with the 13th letter after it' },
+    { id: 'url', name: 'URL', description: 'Decodes URL-encoded strings where special characters are replaced with % followed by hex values' },
+    { id: 'asciiEscapes', name: 'ASCII', description: 'Converts escaped ASCII/Unicode sequences back to readable text' },
+    { id: 'binary', name: 'Binary', description: 'Converts binary data (0s and 1s) to text or other formats' }
+  ];
+
   const handleScan = () => {
     setIsScanning(true);
     setSelectedStringIndex(null);
@@ -97,6 +107,29 @@ export default function EntropyScanner({ onStringSelect, onScan, initialCode = '
       </div>
 
       <div className="p-6 space-y-6">
+        {/* Decoder Method Info Buttons */}
+        <div className="w-full max-w-4xl mx-auto">
+          <div className="text-xs text-muted-foreground mb-2 text-center">
+            Hover over these methods to learn about the encoding types this tool can detect:
+          </div>
+          <div className="flex flex-wrap gap-3 justify-center px-4">
+            {decoderMethods.map(method => (
+              <div key={method.id} className="relative group">
+                <button className="btn btn-sm btn-ghost bg-muted/30 hover:bg-muted/50 transition-colors min-w-[80px]">
+                  {method.name}
+                </button>
+                <div className="absolute z-50 bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-48 p-2 bg-popover text-popover-foreground text-xs rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                  <div className="relative">
+                    <div className="font-medium mb-1">{method.name}</div>
+                    <p>{method.description}</p>
+                    <div className="absolute w-2 h-2 bg-popover rotate-45 -bottom-1 left-1/2 transform -translate-x-1/2"></div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Code Input */}
         <div className="space-y-2">
           <div className="flex justify-between items-center">
